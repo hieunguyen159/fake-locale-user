@@ -1,90 +1,269 @@
+Abbotsford
+Ajax
 Alma
+Amherstburg
+Amos
+Ancaster
+Ange-Gardien
+Annapolis Royal
+Antigonish
 Armstrong
-Aylmer
-Bath
+Arnprior
+Asbestos
+Aurora
+Baie-Comeau
+Baie-Saint-Paul
+Barrie
+Bathurst
+Beaconsfield
+Beauharnois
+Beauceville
+Beauceville-Est
+Beauceville-Ouest
+Beauharnois
 Beaumont
-Belmont
-Borden
-Brockton
+Becancour
+Bedford
+Beloeil
+Berthierville
+Blainville
+Boisbriand
+Bois-des-Filion
+Boucherville
+Brampton
+Brandon
+Brantford
+Bridgewater
+Brockville
+Brossard
 Burlington
-Cadillac
+Burnaby
+Calgary
+Cambridge
+Campbell River
 Campbellton
-Carleton
-Cartwright
-Charlottetown
-Chatham
+Camrose
+Candiac
+Cap-Santé
+Carleton Place
+Chambly
+Chambord
+Chandler
+Chapais
+Charlemagne
+Chateauguay
+Chatham-Kent
 Chelsea
-Chesterville
-Chipman
-Clinton
+Cheneville
+Chibougamau
+Chilliwack
+Clarence-Rockland
+Coaticook
+Cobourg
 Cochrane
+Collingwood
+Compton
+Conception Bay South
+Corner Brook
 Cornwall
-Cumberland
-Deer Lake
-Delisle
+Côte Saint-Luc
+Courtenay
+Cowansville
+Cranbrook
+Dartmouth
+Dawson Creek
 Delta
-Dorchester
-Elgin
-Enterprise
-Fauquier
-Field
-Flatrock
-Fountainbleu
-Georgetown
-Glenwood
-Grand Falls
-Greenwood
+Deux-Montagnes
+Dieppe
+Digby
+Dollard-des-Ormeaux
+Dorval
+Drummondville
+Duncan
+East Angus
+Edmonton
+Edmundston
+Elkford
+Elliot Lake
+Elora
+Erin
+Esquimalt
+Estevan
+Farnham
+Fergus
+Flin Flon
+Forestville
+Fort Erie
+Fort St. John
+Fredericton
+Gander
+Gatineau
+Georgian Bay
+Glace Bay
+Granby
+Grande Prairie
+Greater Sudbury
+Greenfield Park
+Grimsby
+Guelph
+Halifax
+Hamilton
 Hampstead
-Hampton
-Havelock
-Hudson
-Inverness
-Inwood
-Jasper
-Keswick
-Killarney
+Hanover
+Hawkesbury
+Hearst
+High River
+Hinton
+Hope
+Invermere
+Iqaluit
+Joliette
+Jonquière
+Kamloops
+Kapuskasing
+Kelowna
+Kenora
+Kentville
 Kingston
-Lafontaine
-Lasalle
+Kirkland
+Kitchener
+Kitimat
+La Malbaie
+La Prairie
+La Sarre
+Lac-Brome
+Lac-Mégantic
+Lachute
+Laval
+Leamington
+Leduc
+Lennoxville
+L'Épiphanie
+Lévis
+Lindsay
+L'Islet
 Lloydminster
-Lumsden
-Maidstone
-Maitland
-Melbourne
-Minto
+Longueuil
+Lorraine
+Lower Sackville
+Lunenburg
+Magog
+Mahone Bay
+Maniwaki
+Maple Ridge
+Markham
+Mascouche
+Matane
+Medicine Hat
+Meaford
+Melville
+Mercier
+Midland
+Mirabel
+Miramichi
+Mississauga
+Moncton
+Mont-Joli
+Mont-Laurier
+Montmagny
+Montréal
+Mont-Royal
+Mont-Saint-Hilaire
+Moose Jaw
+Mount Pearl
+Nanaimo
 New Glasgow
-Notre Dame de Lourdes
+New Westminster
+Newmarket
+Niagara Falls
+Niagara-on-the-Lake
+Nicolet
+North Battleford
+North Bay
+North Vancouver
 Oakville
-Odessa
-Port Elgin
-Princeton
-Radisson
-Red Rock
+Okotoks
+Olds
+Orangeville
+Orillia
+Oshawa
+Ottawa
+Owen Sound
+Parksville
+Parrsboro
+Pembroke
+Penticton
+Petawawa
+Peterborough
+Pickering
+Pictou
+Pincourt
+Pitt Meadows
+Pointe-Claire
+Port Alberni
+Port Colborne
+Port Coquitlam
+Port Hawkesbury
+Port Moody
+Portage la Prairie
+Powell River
+Prince Albert
+Prince George
+Prince Rupert
+Quinte West
+Quesnel
+Québec
+Rawdon
+Red Deer
+Regina
+Renfrew
+Repentigny
 Richmond
-Russell
-Sandy Lake
-Selkirk
-Shelbourne
+Richmond Hill
+Rimouski
+Rivière-du-Loup
+Roberval
+Rouyn-Noranda
+Sackville
+Saguenay
+Saint-Augustin-de-Desmaures
+Saint-Basile-le-Grand
+Saint-Bruno-de-Montarville
+Saint-Constant
+Saint-Eustache
+Saint-Félicien
+Saint-Georges
+Saint-Hyacinthe
+Saint-Jean-sur-Richelieu
+Saint-Jérôme
+Saint-Lambert
+Saint-Lazare
+Saint-Lin-Laurentides
+Saint-Marc-des-Carrières
+Saint-Ours
+Saint-Paul
+Saint-Sauveur
+Saint-Tite
+Sainte-Adèle
+Sainte-Anne-de-Beaupré
+Sainte-Anne-des-Plaines
+Sainte-Catherine
+Sainte-Julie
+Sainte-Marie
+Sainte-Thérèse
+Salaberry-de-Valleyfield
+Salmon Arm
+Sarnia
+Saskatoon
+Sault Ste. Marie
+Sept-Îles
+Shawinigan
 Sherbrooke
 Sidney
+Smiths Falls
+Sorel-Tracy
 Souris
-South River
-Southampton
-Springfield
-St. Antoine
-St. George
-Stirling
-Stratford
-Summerside
-Sutton
-Tecumseh
-Trenton
-Trout Lake
-Vanier
-Victoria
-Waterloo
-Wellington
-Westport
-Windsor
-Winfield
-Woodstock
+Spruce Grove
+St. Albert
+St. Catharines
+St

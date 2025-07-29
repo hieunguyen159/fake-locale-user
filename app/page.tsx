@@ -1,13 +1,24 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Label } from "@/components/ui/label"
 import { Copy } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
+import { Toaster } from "@/components/ui/toaster"
+import { getCountryData, getPhonePrefix, type CountryLists } from "@/lib/actions"
 
-// Define regions and countries for selection
+interface UserData {
+  fullName: string
+  address: string
+  phoneNumber: string
+  email: string
+  birthday: string
+}
+
+// Expanded regions and countries data with codes
 const regionsData = [
   {
     name: "Asian",
@@ -17,6 +28,7 @@ const regionsData = [
       { name: "China", code: "CN" },
       { name: "India", code: "IN" },
       { name: "South Korea", code: "KR" },
+      { name: "Iran", code: "IR" },
     ],
   },
   {
@@ -27,6 +39,15 @@ const regionsData = [
       { name: "United Kingdom", code: "GB" },
       { name: "Spain", code: "ES" },
       { name: "Italy", code: "IT" },
+      { name: "Denmark", code: "DK" },
+      { name: "Finland", code: "FI" },
+      { name: "Ireland", code: "IE" },
+      { name: "Netherlands", code: "NL" },
+      { name: "Norway", code: "NO" },
+      { name: "Serbia", code: "RS" },
+      { name: "Turkey", code: "TR" },
+      { name: "Ukraine", code: "UA" },
+      { name: "Switzerland", code: "CH" },
     ],
   },
   {
@@ -41,16 +62,7 @@ const regionsData = [
     name: "South American",
     countries: [
       { name: "Brazil", code: "BR" },
-      { name: "Argentina", code: "AR" },
-      { name: "Colombia", code: "CO" },
-    ],
-  },
-  {
-    name: "African",
-    countries: [
-      { name: "Nigeria", code: "NG" },
-      { name: "South Africa", code: "ZA" },
-      { name: "Egypt", code: "EG" },
+      // Add other South American countries if data exists
     ],
   },
   {
@@ -60,122 +72,69 @@ const regionsData = [
       { name: "New Zealand", code: "NZ" },
     ],
   },
+  {
+    name: "Fictional", // For LEGO data
+    countries: [{ name: "LEGO", code: "LEGO" }],
+  },
 ]
 
-// Simple fake data generation function
-const generateFakeData = (region: string, country: string) => {
-  let firstName = "John"
-  let lastName = "Doe"
-  let emailDomain = "example.com"
-  let phonePrefix = "1"
-  let addressStreet = "123 Main St"
-  let addressCity = "Anytown"
-  let addressZip = "12345"
-
-  // Basic customization based on region
-  if (region === "Asian") {
-    const asianFirstNames = ["Minh", "Akira", "Wei", "Priya", "Jian"]
-    const asianLastNames = ["Nguyen", "Tanaka", "Wang", "Singh", "Kim"]
-    firstName = asianFirstNames[Math.floor(Math.random() * asianFirstNames.length)]
-    lastName = asianLastNames[Math.floor(Math.random() * asianLastNames.length)]
-    emailDomain = "asia.net"
-    phonePrefix = "84" // Example for Vietnam
-    addressStreet = "456 Tran Hung Dao"
-    addressCity = "Ho Chi Minh City"
-    addressZip = "70000"
-  } else if (region === "European") {
-    const europeanFirstNames = ["Hans", "Marie", "Pierre", "Sofia", "Luca"]
-    const europeanLastNames = ["Schmidt", "Dubois", "Smith", "Garcia", "Rossi"]
-    firstName = europeanFirstNames[Math.floor(Math.random() * europeanFirstNames.length)]
-    lastName = europeanLastNames[Math.floor(Math.random() * europeanLastNames.length)]
-    emailDomain = "europe.org"
-    phonePrefix = "49" // Example for Germany
-    addressStreet = "789 Berliner Str."
-    addressCity = "Berlin"
-    addressZip = "10115"
-  } else if (region === "North American") {
-    const naFirstNames = ["Michael", "Emily", "David", "Sarah", "Chris"]
-    const naLastNames = ["Johnson", "Williams", "Brown", "Jones", "Miller"]
-    firstName = naFirstNames[Math.floor(Math.random() * naFirstNames.length)]
-    lastName = naLastNames[Math.floor(Math.random() * naLastNames.length)]
-    emailDomain = "na.com"
-    phonePrefix = "1" // Example for US/Canada
-    addressStreet = "1000 Maple Ave"
-    addressCity = "Springfield"
-    addressZip = "90210"
-  } else if (region === "South American") {
-    const saFirstNames = ["Maria", "Jose", "Ana", "Pedro", "Sofia"]
-    const saLastNames = ["Silva", "Santos", "Rodriguez", "Gonzales", "Lima"]
-    firstName = saFirstNames[Math.floor(Math.random() * saFirstNames.length)]
-    lastName = saLastNames[Math.floor(Math.random() * saLastNames.length)]
-    emailDomain = "sa.com"
-    phonePrefix = "55" // Example for Brazil
-    addressStreet = "Rua Augusta, 2000"
-    addressCity = "São Paulo"
-    addressZip = "01304-000"
-  } else if (region === "African") {
-    const afFirstNames = ["Fatima", "Kwame", "Aisha", "Chidi", "Zola"]
-    const afLastNames = ["Okoro", "Nkosi", "Diallo", "Musa", "Adeyemi"]
-    firstName = afFirstNames[Math.floor(Math.random() * afFirstNames.length)]
-    lastName = afLastNames[Math.floor(Math.random() * afLastNames.length)]
-    emailDomain = "africa.net"
-    phonePrefix = "234" // Example for Nigeria
-    addressStreet = "Plot 10 Victoria Island"
-    addressCity = "Lagos"
-    addressZip = "101241"
-  } else if (region === "Oceanian") {
-    const ocFirstNames = ["Liam", "Olivia", "Noah", "Ava", "Jack"]
-    const ocLastNames = ["Smith", "Jones", "Williams", "Brown", "Wilson"]
-    firstName = ocFirstNames[Math.floor(Math.random() * ocFirstNames.length)]
-    lastName = ocLastNames[Math.floor(Math.random() * ocLastNames.length)]
-    emailDomain = "oceania.org"
-    phonePrefix = "61" // Example for Australia
-    addressStreet = "50 George St"
-    addressCity = "Sydney"
-    addressZip = "2000"
+// Helper to get country code from country name
+const getCountryCodeFromName = (countryName: string): string | undefined => {
+  for (const region of regionsData) {
+    const foundCountry = region.countries.find((c) => c.name === countryName)
+    if (foundCountry) {
+      return foundCountry.code
+    }
   }
+  return undefined
+}
+
+// Dynamic fake data generation function using loaded lists
+const generateFakeUser = (countryLists: CountryLists, countryName: string): UserData => {
+  const { cities, femaleFirstNames, lastNames, maleFirstNames, states, streets } = countryLists
+
+  const randomItem = <T,>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)]
+  const randomNum = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min
+
+  let firstName: string
+  const gender = Math.random() > 0.5 ? "male" : "female"
+  firstName = gender === "male" ? randomItem(maleFirstNames) : randomItem(femaleFirstNames)
+  const lastName = randomItem(lastNames)
 
   const fullName = `${firstName} ${lastName}`
-  const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}${Math.floor(Math.random() * 100)}@${emailDomain}`
-  const phone = `+${phonePrefix} ${Math.floor(100000000 + Math.random() * 900000000)}`
-  const address = `${addressStreet}, ${addressCity}, ${country}, ${addressZip}`
+  const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}${randomNum(1, 100)}@example.com`
+  const phoneNumber = `+${getPhonePrefix(countryName)} ${randomNum(100, 999)} ${randomNum(100, 999)} ${randomNum(1000, 9999)}`
+  const address = `${randomNum(1, 999)} ${randomItem(streets)}, ${randomItem(cities)}, ${randomItem(states)}`
+  const birthDate = new Date(randomNum(1950, 2005), randomNum(0, 11), randomNum(1, 28))
+  const formattedBirthday = `${String(birthDate.getDate()).padStart(2, "0")}/${String(birthDate.getMonth() + 1).padStart(2, "0")}/${birthDate.getFullYear()}`
 
-  return {
-    fullName,
-    email,
-    phone,
-    address,
-  }
+  return { fullName, address, phoneNumber, email, birthday: formattedBirthday }
 }
 
-interface UserData {
-  fullName: string
-  email: string
-  phone: string
-  address: string
-}
-
-export default function Component() {
-  const [selectedRegion, setSelectedRegion] = useState<string | undefined>(undefined)
-  const [selectedCountry, setSelectedCountry] = useState<string | undefined>(undefined)
-  const [availableCountries, setAvailableCountries] = useState<{ name: string; code: string }[]>([])
-  const [userData, setUserData] = useState<UserData | null>(null)
+export default function Home() {
   const { toast } = useToast()
+  const [selectedRegion, setSelectedRegion] = useState<string | undefined>(undefined)
+  const [selectedCountryName, setSelectedCountryName] = useState<string | undefined>(undefined)
+  const [selectedCountryCode, setSelectedCountryCode] = useState<string | undefined>(undefined)
+  const [availableCountriesForSelect, setAvailableCountriesForSelect] = useState<{ name: string; code: string }[]>([])
+  const [userData, setUserData] = useState<UserData | null>(null)
 
   useEffect(() => {
-    // Detect browser location and set defaults
-    if (typeof window !== "undefined") {
+    // Detect browser's preferred language to set default country
+    if (typeof navigator !== "undefined" && navigator.language) {
       const userLocale = navigator.language // e.g., "en-US", "vi-VN"
       const countryCode = userLocale.split("-")[1]?.toUpperCase()
 
       let detectedRegion: string | undefined
-      let detectedCountry: string | undefined
+      let detectedCountryName: string | undefined
+      let detectedCountryCode: string | undefined
 
       for (const region of regionsData) {
         const foundCountry = region.countries.find((c) => c.code === countryCode)
         if (foundCountry) {
           detectedRegion = region.name
-          detectedCountry = foundCountry.name
+          detectedCountryName = foundCountry.name
+          detectedCountryCode = foundCountry.code
           break
         }
       }
@@ -183,42 +142,61 @@ export default function Component() {
       if (detectedRegion) {
         setSelectedRegion(detectedRegion)
         const countriesInRegion = regionsData.find((r) => r.name === detectedRegion)?.countries || []
-        setAvailableCountries(countriesInRegion)
-        if (detectedCountry) {
-          setSelectedCountry(detectedCountry)
+        setAvailableCountriesForSelect(countriesInRegion)
+        if (detectedCountryName && detectedCountryCode) {
+          setSelectedCountryName(detectedCountryName)
+          setSelectedCountryCode(detectedCountryCode)
         } else if (countriesInRegion.length > 0) {
           // Fallback to first country in region if specific country not found
-          setSelectedCountry(countriesInRegion[0].name)
+          setSelectedCountryName(countriesInRegion[0].name)
+          setSelectedCountryCode(countriesInRegion[0].code)
         }
       } else {
         // Default to Asian/Vietnam if no detection or unknown country
         setSelectedRegion("Asian")
-        setAvailableCountries(regionsData.find((r) => r.name === "Asian")?.countries || [])
-        setSelectedCountry("Vietnam")
+        const asianCountries = regionsData.find((r) => r.name === "Asian")?.countries || []
+        setAvailableCountriesForSelect(asianCountries)
+        setSelectedCountryName("Vietnam")
+        setSelectedCountryCode("VN")
       }
     }
   }, [])
 
   useEffect(() => {
-    // Update available countries when region changes
     if (selectedRegion) {
       const countries = regionsData.find((r) => r.name === selectedRegion)?.countries || []
-      setAvailableCountries(countries)
-      // Reset country if the previously selected country is not in the new region
-      // Or if the new region has no countries, clear selected country
-      if (!countries.some((c) => c.name === selectedCountry) || countries.length === 0) {
-        setSelectedCountry(countries.length > 0 ? countries[0].name : undefined)
+      setAvailableCountriesForSelect(countries)
+      // If the current country name is not in the new list, or list is empty, reset
+      if (!countries.some((c) => c.name === selectedCountryName) || countries.length === 0) {
+        setSelectedCountryName(countries.length > 0 ? countries[0].name : undefined)
+        setSelectedCountryCode(countries.length > 0 ? countries[0].code : undefined)
+      } else {
+        // Ensure selectedCountryCode is updated if selectedCountryName is already valid for the new region
+        const currentCountry = countries.find((c) => c.name === selectedCountryName)
+        if (currentCountry) {
+          setSelectedCountryCode(currentCountry.code)
+        }
       }
     } else {
-      setAvailableCountries([])
-      setSelectedCountry(undefined)
+      setAvailableCountriesForSelect([])
+      setSelectedCountryName(undefined)
+      setSelectedCountryCode(undefined)
     }
-  }, [selectedRegion])
+  }, [selectedRegion, selectedCountryName])
 
-  const handleGenerate = () => {
-    if (selectedRegion && selectedCountry) {
-      const data = generateFakeData(selectedRegion, selectedCountry)
-      setUserData(data)
+  const handleGenerate = useCallback(async () => {
+    if (selectedRegion && selectedCountryName && selectedCountryCode) {
+      const countryLists = await getCountryData(selectedCountryCode)
+      if (countryLists) {
+        const data = generateFakeUser(countryLists, selectedCountryName)
+        setUserData(data)
+      } else {
+        toast({
+          title: "Data Not Available",
+          description: `Could not load data for ${selectedCountryName}. Please try another country.`,
+          variant: "destructive",
+        })
+      }
     } else {
       toast({
         title: "Selection Missing",
@@ -226,121 +204,175 @@ export default function Component() {
         variant: "destructive",
       })
     }
-  }
+  }, [selectedRegion, selectedCountryName, selectedCountryCode, toast])
 
-  const copyToClipboard = (text: string, fieldName: string) => {
-    navigator.clipboard
-      .writeText(text)
-      .then(() => {
+  const handleCopy = useCallback(
+    async (text: string, fieldName: string) => {
+      try {
+        await navigator.clipboard.writeText(text)
         toast({
-          title: "Copied to clipboard!",
-          description: `${fieldName} has been copied.`,
+          title: "Copied!",
+          description: `${fieldName} copied to clipboard.`,
         })
-      })
-      .catch((err) => {
+      } catch (err) {
+        console.error("Failed to copy: ", err)
         toast({
-          title: "Failed to copy",
-          description: "Could not copy text to clipboard. Please try again.",
+          title: "Copy Failed",
+          description: `Could not copy ${fieldName}. Please try again.`,
           variant: "destructive",
         })
-        console.error("Failed to copy: ", err)
-      })
-  }
+      }
+    },
+    [toast],
+  )
+
+  const handleCopyJson = useCallback(async () => {
+    if (userData) {
+      try {
+        await navigator.clipboard.writeText(JSON.stringify(userData, null, 2))
+        toast({
+          title: "Copied!",
+          description: "User data (JSON) copied to clipboard.",
+        })
+      } catch (err) {
+        console.error("Failed to copy JSON: ", err)
+        toast({
+          title: "Copy Failed",
+          description: "Could not copy JSON data. Please try again.",
+          variant: "destructive",
+        })
+      }
+    }
+  }, [userData, toast])
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 p-4">
-      <div className="max-w-2xl w-full text-center space-y-8 bg-white p-8 rounded-lg shadow-md">
-        <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-          Choose the location where you want to mock data.
-        </h1>
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center p-4">
+      <div
+        className={`flex flex-col md:flex-row items-start justify-center gap-8 w-full max-w-4xl ${userData ? "md:items-center" : ""}`}
+      >
+        {/* Left Section: Controls */}
+        <div className="flex flex-col items-center justify-center text-center md:w-1/2">
+          <h1 className="text-3xl font-bold mb-8">Choose the location where you want to mock data.</h1>
 
-        <div className="space-y-6">
-          <div className="space-y-2">
-            <label htmlFor="location-select" className="block text-sm font-medium text-gray-700">
-              Location
-            </label>
-            <Select value={selectedRegion} onValueChange={setSelectedRegion}>
-              <SelectTrigger
-                id="location-select"
-                className="w-full max-w-xs mx-auto border-gray-300 focus:border-black focus:ring-black"
+          <div className="w-full max-w-xs space-y-6">
+            <div>
+              <Label htmlFor="location-select" className="block text-sm font-medium text-gray-700 mb-2">
+                Location
+              </Label>
+              <Select value={selectedRegion} onValueChange={setSelectedRegion}>
+                <SelectTrigger id="location-select" className="w-full">
+                  <SelectValue placeholder="Select a region" />
+                </SelectTrigger>
+                <SelectContent>
+                  {regionsData.map((region) => (
+                    <SelectItem key={region.name} value={region.name}>
+                      {region.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label htmlFor="country-select" className="block text-sm font-medium text-gray-700 mb-2">
+                Country
+              </Label>
+              <Select
+                value={selectedCountryName}
+                onValueChange={(name) => {
+                  setSelectedCountryName(name)
+                  setSelectedCountryCode(getCountryCodeFromName(name))
+                }}
               >
-                <SelectValue placeholder="Select a region" />
-              </SelectTrigger>
-              <SelectContent>
-                {regionsData.map((region) => (
-                  <SelectItem key={region.name} value={region.name}>
-                    {region.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+                <SelectTrigger id="country-select" className="w-full">
+                  <SelectValue placeholder="Select a country" />
+                </SelectTrigger>
+                <SelectContent>
+                  {availableCountriesForSelect.map((country) => (
+                    <SelectItem key={country.code} value={country.name}>
+                      {country.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-          <div className="space-y-2">
-            <label htmlFor="country-select" className="block text-sm font-medium text-gray-700">
-              Country
-            </label>
-            <Select
-              value={selectedCountry}
-              onValueChange={setSelectedCountry}
-              disabled={!selectedRegion || availableCountries.length === 0}
-            >
-              <SelectTrigger
-                id="country-select"
-                className="w-full max-w-xs mx-auto border-gray-300 focus:border-black focus:ring-black"
-              >
-                <SelectValue placeholder="Select a country" />
-              </SelectTrigger>
-              <SelectContent>
-                {availableCountries.map((country) => (
-                  <SelectItem key={country.code} value={country.name}>
-                    {country.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <Button onClick={handleGenerate} className="w-full bg-black text-white hover:bg-gray-800">
+              GENERATE
+            </Button>
           </div>
-
-          <Button
-            onClick={handleGenerate}
-            className="w-full max-w-xs bg-black text-white hover:bg-gray-800 transition-colors duration-200 py-2.5 text-base font-semibold"
-          >
-            GENERATE
-          </Button>
         </div>
 
+        {/* Right Section: Generated Data */}
         {userData && (
-          <Card className="mt-10 w-full max-w-md mx-auto shadow-lg border-gray-200">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-2xl font-bold text-gray-900">Generated User Data</CardTitle>
+          <Card className="w-full md:w-1/2 max-w-md mt-8 md:mt-0 shadow-lg">
+            <CardHeader>
+              <CardTitle className="text-center text-2xl">Generated User Data</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {Object.entries(userData).map(([key, value]) => (
-                <div
-                  key={key}
-                  className="flex items-center justify-between p-3 border border-gray-200 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors duration-150"
-                >
-                  <div className="flex flex-col items-start flex-grow pr-2">
-                    <span className="text-xs font-medium text-gray-500 capitalize">
-                      {key.replace(/([A-Z])/g, " $1").trim()}
-                    </span>
-                    <span className="text-base font-semibold text-gray-800 break-all text-left">{value}</span>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => copyToClipboard(value, key.replace(/([A-Z])/g, " $1").trim())}
-                    className="ml-2 shrink-0 text-gray-600 hover:text-black"
-                  >
+              <div className="flex flex-col">
+                <Label className="text-sm font-medium text-gray-700">Full name</Label>
+                <div className="flex items-center justify-between">
+                  <span className="text-lg font-semibold">{userData.fullName}</span>
+                  <Button variant="ghost" size="icon" onClick={() => handleCopy(userData.fullName, "Full name")}>
                     <Copy className="h-4 w-4" />
-                    <span className="sr-only">Copy {key.replace(/([A-Z])/g, " $1").trim()}</span>
+                    <span className="sr-only">Copy full name</span>
                   </Button>
                 </div>
-              ))}
+              </div>
+
+              <div className="flex flex-col">
+                <Label className="text-sm font-medium text-gray-700">Address</Label>
+                <div className="flex items-center justify-between">
+                  <span className="text-lg font-semibold">{userData.address}</span>
+                  <Button variant="ghost" size="icon" onClick={() => handleCopy(userData.address, "Address")}>
+                    <Copy className="h-4 w-4" />
+                    <span className="sr-only">Copy address</span>
+                  </Button>
+                </div>
+              </div>
+
+              <div className="flex flex-col">
+                <Label className="text-sm font-medium text-gray-700">Phone number</Label>
+                <div className="flex items-center justify-between">
+                  <span className="text-lg font-semibold">{userData.phoneNumber}</span>
+                  <Button variant="ghost" size="icon" onClick={() => handleCopy(userData.phoneNumber, "Phone number")}>
+                    <Copy className="h-4 w-4" />
+                    <span className="sr-only">Copy phone number</span>
+                  </Button>
+                </div>
+              </div>
+
+              <div className="flex flex-col">
+                <Label className="text-sm font-medium text-gray-700">Email</Label>
+                <div className="flex items-center justify-between">
+                  <span className="text-lg font-semibold">{userData.email}</span>
+                  <Button variant="ghost" size="icon" onClick={() => handleCopy(userData.email, "Email")}>
+                    <Copy className="h-4 w-4" />
+                    <span className="sr-only">Copy email</span>
+                  </Button>
+                </div>
+              </div>
+
+              <div className="flex flex-col">
+                <Label className="text-sm font-medium text-gray-700">Birthday</Label>
+                <div className="flex items-center justify-between">
+                  <span className="text-lg font-semibold">{userData.birthday}</span>
+                  <Button variant="ghost" size="icon" onClick={() => handleCopy(userData.birthday, "Birthday")}>
+                    <Copy className="h-4 w-4" />
+                    <span className="sr-only">Copy birthday</span>
+                  </Button>
+                </div>
+              </div>
+
+              <Button onClick={handleCopyJson} className="w-full mt-4 bg-gray-100 text-gray-800 hover:bg-gray-200">
+                Copy as JSON
+              </Button>
             </CardContent>
           </Card>
         )}
       </div>
+      <Toaster />
     </div>
   )
 }
