@@ -1,98 +1,56 @@
-"use client"
+"use client";
 
-import { useState, useCallback } from "react"
-import { useToast } from "@/hooks/use-toast"
-import { getCountryData } from "@/lib/actions"
-import { generateFakeUser } from "@/utils/user-generator"
-import type { UserData, Country } from "@/types/user"
-import { DEFAULT_COUNTRY, COUNTRIES_DATA } from "@/constants/countries"
+import { useState, useCallback } from "react";
+import { getCountryData } from "@/lib/actions";
+import { generateFakeUser } from "@/utils/user-generator";
+import type { UserData, Country } from "@/types/user";
+import { DEFAULT_COUNTRY, COUNTRIES_DATA } from "@/constants/countries";
 
 export const useUserGenerator = () => {
-  const { toast } = useToast()
-  const [selectedCountry, setSelectedCountry] = useState<Country>(DEFAULT_COUNTRY)
-  const [userData, setUserData] = useState<UserData | null>(null)
-  const [isGenerating, setIsGenerating] = useState(false)
+  const [selectedCountry, setSelectedCountry] =
+    useState<Country>(DEFAULT_COUNTRY);
+  const [userData, setUserData] = useState<UserData | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const handleCountryChange = useCallback((countryName: string) => {
-    const country = COUNTRIES_DATA.find((c) => c.name === countryName)
+    const country = COUNTRIES_DATA.find((c) => c.name === countryName);
     if (country) {
-      setSelectedCountry(country)
+      setSelectedCountry(country);
     }
-  }, [])
+  }, []);
 
   const handleGenerate = useCallback(async () => {
-    if (!selectedCountry) {
-      toast({
-        title: "Selection Missing",
-        description: "Please select a country to generate data.",
-        variant: "destructive",
-      })
-      return
-    }
-
-    setIsGenerating(true)
+    setIsGenerating(true);
     try {
-      const countryLists = await getCountryData(selectedCountry.code)
+      const countryLists = await getCountryData(selectedCountry.code);
       if (countryLists) {
-        const data = generateFakeUser(countryLists, selectedCountry.name)
-        setUserData(data)
-      } else {
-        toast({
-          title: "Data Not Available",
-          description: `Could not load data for ${selectedCountry.name}. Please try another country.`,
-          variant: "destructive",
-        })
+        const data = generateFakeUser(countryLists, selectedCountry.name);
+        setUserData(data);
       }
     } catch (error) {
-      console.error("Error generating user data:", error)
-      toast({
-        title: "Generation Failed",
-        description: "An error occurred while generating user data. Please try again.",
-        variant: "destructive",
-      })
+      console.error("Error generating user data:", error);
     } finally {
-      setIsGenerating(false)
+      setIsGenerating(false);
     }
-  }, [selectedCountry, toast])
+  }, [selectedCountry]);
 
-  const handleCopy = useCallback(
-    async (text: string, fieldName: string) => {
-      try {
-        await navigator.clipboard.writeText(text)
-        toast({
-          title: "Copied!",
-          description: `${fieldName} copied to clipboard.`,
-        })
-      } catch (err) {
-        console.error("Failed to copy: ", err)
-        toast({
-          title: "Copy Failed",
-          description: `Could not copy ${fieldName}. Please try again.`,
-          variant: "destructive",
-        })
-      }
-    },
-    [toast],
-  )
+  const handleCopy = async (text: string, fieldName: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch (err) {
+      console.error("Failed to copy: ", err);
+    }
+  };
 
   const handleCopyJson = useCallback(async () => {
     if (userData) {
       try {
-        await navigator.clipboard.writeText(JSON.stringify(userData, null, 2))
-        toast({
-          title: "Copied!",
-          description: "User data (JSON) copied to clipboard.",
-        })
+        await navigator.clipboard.writeText(JSON.stringify(userData, null, 2));
       } catch (err) {
-        console.error("Failed to copy JSON: ", err)
-        toast({
-          title: "Copy Failed",
-          description: "Could not copy JSON data. Please try again.",
-          variant: "destructive",
-        })
+        console.error("Failed to copy JSON: ", err);
       }
     }
-  }, [userData, toast])
+  }, [userData]);
 
   return {
     selectedCountry,
@@ -102,5 +60,5 @@ export const useUserGenerator = () => {
     handleGenerate,
     handleCopy,
     handleCopyJson,
-  }
-}
+  };
+};
