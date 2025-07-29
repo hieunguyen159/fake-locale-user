@@ -122,13 +122,14 @@ export const reducer = (state: State, action: Action): State => {
 
 const listeners: ((state: State) => void)[] = []
 
-let state: State = {
+// Initialize state properly
+let globalState: State = {
   toasts: [],
 }
 
 function setState(action: Action) {
-  state = reducer(state, action)
-  listeners.forEach((listener) => listener(state))
+  globalState = reducer(globalState, action)
+  listeners.forEach((listener) => listener(globalState))
 }
 
 const dispatch = (action: Action) => {
@@ -183,7 +184,7 @@ function toast({ ...props }: Toast) {
 }
 
 function useToast() {
-  const [state, localSetState] = React.useState(state)
+  const [state, localSetState] = React.useState(globalState)
 
   React.useEffect(() => {
     const listener = (newState: State) => {
