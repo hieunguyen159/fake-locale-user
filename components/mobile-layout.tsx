@@ -1,19 +1,19 @@
-"use client"
+"use client";
 
-import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { CountrySelector } from "@/components/country-selector"
-import { UserDataCard } from "@/components/user-data-card"
-import type { UserData, Country } from "@/types/user"
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { CountrySelector } from "@/components/country-selector";
+import { UserDataCard } from "@/components/user-data-card";
+import type { UserData, Country } from "@/types/user";
 
 interface MobileLayoutProps {
-  selectedCountry: Country
-  onCountryChange: (countryName: string) => void
-  onGenerate: () => void
-  userData: UserData | null
-  onCopy: (text: string, fieldName: string) => void
-  onCopyJson: () => void
-  isGenerating: boolean
+  selectedCountry: Country;
+  onCountryChange: (countryName: string) => void;
+  onGenerate: () => void;
+  userData: UserData | null;
+  onCopy: (text: string, fieldName: string) => void;
+  onCopyJson: () => void;
+  isGenerating: boolean;
 }
 
 export function MobileLayout({
@@ -43,15 +43,26 @@ export function MobileLayout({
               id="country-select-mobile"
             />
 
-            <Button onClick={onGenerate} className="w-full" disabled={isGenerating}>
-              {isGenerating ? "Generating..." : "Generate User Data"}
+            <Button
+              onClick={onGenerate}
+              className="w-full"
+              disabled={isGenerating}
+            >
+              {isGenerating ? "Generating..." : "Generate"}
             </Button>
           </CardContent>
         </Card>
 
         {/* Generated Data */}
-        {userData && <UserDataCard userData={userData} onCopy={onCopy} onCopyJson={onCopyJson} variant="mobile" />}
+        {userData && (
+          <UserDataCard
+            userData={userData}
+            onCopy={onCopy}
+            onCopyJson={onCopyJson}
+            variant="mobile"
+          />
+        )}
       </div>
     </div>
-  )
+  );
 }
