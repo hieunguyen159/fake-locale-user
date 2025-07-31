@@ -1,26 +1,19 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { TrendingUp, Users, Calendar, Target } from "lucide-react";
 import { useStatsContext } from "@/components/stats-context";
+import { Badge } from "@/components/ui/badge";
 import { COUNTRIES_DATA } from "@/constants/countries";
+import { Calendar, Target, Users } from "lucide-react";
 
 export function StatsDisplay() {
-  const {
-    stats,
-    getTodayCount,
-    getMostUsedCountry,
-    totalGenerated,
-    isLoading,
-  } = useStatsContext();
+  const { getTodayCount, getMostUsedCountry, totalGenerated, isLoading } =
+    useStatsContext();
   const mostUsedCountry = getMostUsedCountry();
   const todayCount = getTodayCount();
 
   const getCountryName = (code: string) => {
     return COUNTRIES_DATA.find((c) => c.code === code)?.name || code;
   };
-  console.log({ stats, totalGenerated });
   return (
     <div
       className="flex items-center gap-4 text-sm text-muted-foreground"
