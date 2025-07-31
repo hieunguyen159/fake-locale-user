@@ -1,7 +1,4 @@
-"use server";
-
-import { promises as fs } from "fs";
-import path from "path";
+import { COUNTRY_DATA_MAP, type CountryCode } from "@/data/constants";
 
 export interface CountryLists {
   cities: string[];
@@ -10,58 +7,25 @@ export interface CountryLists {
   maleFirstNames: string[];
   states: string[];
   streets: string[];
-  // Add other lists if they exist and are needed, e.g., postCodes: string[]
 }
 
-const dataDir = path.join(process.cwd(), "data");
-
-async function readListFile(
-  countryCode: string,
-  fileName: string
-): Promise<string[]> {
+export function getCountryData(countryCode: string): CountryLists | null {
   try {
-    const filePath = path.join(dataDir, countryCode, "lists", fileName);
-    const content = await fs.readFile(filePath, "utf-8");
-    return content
-      .split("\n")
-      .map((line) => line.trim())
-      .filter((line) => line.length > 0);
-  } catch (error) {
-    console.error(
-      `Error reading file ${fileName} for country ${countryCode}:`,
-      error
-    );
-    return [];
-  }
-}
+    // Check if the country code is valid
+    if (!(countryCode in COUNTRY_DATA_MAP)) {
+      console.warn(`Country code ${countryCode} not found in data map`);
+      return null;
+    }
 
-export async function getCountryData(
-  countryCode: string
-): Promise<CountryLists | null> {
-  try {
-    const [
-      cities,
-      femaleFirstNames,
-      lastNames,
-      maleFirstNames,
-      states,
-      streets,
-    ] = await Promise.all([
-      readListFile(countryCode, "cities.txt"),
-      readListFile(countryCode, "female_first.txt"),
-      readListFile(countryCode, "last.txt"),
-      readListFile(countryCode, "male_first.txt"),
-      readListFile(countryCode, "states.txt"),
-      readListFile(countryCode, "street.txt"),
-    ]);
+    const countryData = COUNTRY_DATA_MAP[countryCode as CountryCode];
 
     return {
-      cities,
-      femaleFirstNames,
-      lastNames,
-      maleFirstNames,
-      states,
-      streets,
+      cities: countryData.cities,
+      femaleFirstNames: countryData.femaleFirstNames,
+      lastNames: countryData.lastNames,
+      maleFirstNames: countryData.maleFirstNames,
+      states: countryData.states,
+      streets: countryData.streets,
     };
   } catch (error) {
     console.error(`Failed to load country data for ${countryCode}:`, error);

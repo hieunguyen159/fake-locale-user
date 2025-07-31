@@ -19,10 +19,10 @@ export const useUserGenerator = () => {
     }
   }, []);
 
-  const handleGenerate = useCallback(async () => {
+  const handleGenerate = useCallback(() => {
     setIsGenerating(true);
     try {
-      const countryLists = await getCountryData(selectedCountry.code);
+      const countryLists = getCountryData(selectedCountry.code);
       if (countryLists) {
         const data = generateFakeUser(countryLists, selectedCountry.name);
         setUserData(data);
