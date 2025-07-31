@@ -47,4 +47,3 @@ Thumbs.db
 
 # Stats data (now using Supabase)
 data/stats.json
-*.*

@@ -1,6 +1,6 @@
 "use client";
 
-import { useStatsContext } from "@/components/stats-context";
+import { useStatsContext } from "./stats-context";
 import { Badge } from "@/components/ui/badge";
 import { COUNTRIES_DATA } from "@/constants/countries";
 import { Calendar, Target, Users } from "lucide-react";
