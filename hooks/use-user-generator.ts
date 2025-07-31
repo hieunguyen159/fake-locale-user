@@ -5,14 +5,14 @@ import { getCountryData } from "@/lib/actions";
 import { generateFakeUser } from "@/utils/user-generator";
 import type { UserData, Country } from "@/types/user";
 import { DEFAULT_COUNTRY, COUNTRIES_DATA } from "@/constants/countries";
-import { useStats } from "@/hooks/use-stats";
+import { useStatsContext } from "@/components/stats-context";
 
 export const useUserGenerator = () => {
   const [selectedCountry, setSelectedCountry] =
     useState<Country>(DEFAULT_COUNTRY);
   const [userData, setUserData] = useState<UserData | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
-  const { incrementGeneration, totalGenerated } = useStats();
+  const { incrementGeneration, totalGenerated } = useStatsContext();
 
   const handleCountryChange = useCallback((countryName: string) => {
     const country = COUNTRIES_DATA.find((c) => c.name === countryName);

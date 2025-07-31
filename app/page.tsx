@@ -45,7 +45,7 @@ export default function Home() {
       <div className="fixed bottom-4 left-4 right-4 lg:left-auto lg:right-4 lg:w-auto">
         <div className="bg-white/90 backdrop-blur-sm border rounded-lg px-4 py-2 shadow-lg">
           <div className="flex items-center justify-between gap-4">
-            <StatsDisplay variant="compact" />
+            <StatsDisplay />
             <RealtimeIndicator />
           </div>
         </div>

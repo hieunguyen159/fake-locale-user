@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import "./globals.css";
+import { StatsProvider } from "@/components/stats-context";
 
 export const metadata: Metadata = {
   title: "UserMint - Fake User Data Generator",
@@ -18,7 +19,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
-      <body className="font-sans antialiased">{children}</body>
+      <body className="font-sans antialiased">
+        <StatsProvider>{children}</StatsProvider>
+      </body>
     </html>
   );
 }
