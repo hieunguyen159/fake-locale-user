@@ -5,12 +5,14 @@ import { getCountryData } from "@/lib/actions";
 import { generateFakeUser } from "@/utils/user-generator";
 import type { UserData, Country } from "@/types/user";
 import { DEFAULT_COUNTRY, COUNTRIES_DATA } from "@/constants/countries";
+import { useStats } from "@/hooks/use-stats";
 
 export const useUserGenerator = () => {
   const [selectedCountry, setSelectedCountry] =
     useState<Country>(DEFAULT_COUNTRY);
   const [userData, setUserData] = useState<UserData | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const { incrementGeneration, totalGenerated } = useStats();
 
   const handleCountryChange = useCallback((countryName: string) => {
     const country = COUNTRIES_DATA.find((c) => c.name === countryName);
@@ -19,20 +21,21 @@ export const useUserGenerator = () => {
     }
   }, []);
 
-  const handleGenerate = useCallback(() => {
+  const handleGenerate = useCallback(async () => {
     setIsGenerating(true);
     try {
       const countryLists = getCountryData(selectedCountry.code);
       if (countryLists) {
         const data = generateFakeUser(countryLists, selectedCountry.name);
         setUserData(data);
+        await incrementGeneration(selectedCountry.code);
       }
     } catch (error) {
       console.error("Error generating user data:", error);
     } finally {
       setIsGenerating(false);
     }
-  }, [selectedCountry]);
+  }, [selectedCountry, incrementGeneration]);
 
   const handleCopy = async (text: string, fieldName: string) => {
     try {
@@ -60,5 +63,6 @@ export const useUserGenerator = () => {
     handleGenerate,
     handleCopy,
     handleCopyJson,
+    totalGenerated,
   };
 };

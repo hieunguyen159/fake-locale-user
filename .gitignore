@@ -4,11 +4,12 @@
 /node_modules
 /.pnp
 .pnp.js
+.yarn/install-state.gz
 
 # testing
 /coverage
 
-# next.js build output
+# next.js
 /.next/
 /out/
 
@@ -23,12 +24,26 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.pnpm-debug.log*
 
 # local env files
 .env*.local
-.vercel/
-.turbo/
+.env
 
-# vercel artifacts
+# vercel
 .vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+Thumbs.db
+
+# Stats data (now using Supabase)
+data/stats.json

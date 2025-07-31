@@ -49,10 +49,14 @@ export function getPhonePrefix(countryName: string): string {
       return "47";
     case "Serbia":
       return "381";
+    case "Senegal":
+      return "221";
     case "Turkey":
       return "90";
     case "Ukraine":
       return "380";
+    case "Uganda":
+      return "256";
     case "Switzerland":
       return "41";
     case "LEGO":

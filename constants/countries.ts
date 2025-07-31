@@ -1,4 +1,4 @@
-import type { Country } from "@/types/user"
+import type { Country } from "@/types/user";
 
 export const COUNTRIES_DATA: Country[] = [
   { name: "Australia", code: "AU" },
@@ -10,8 +10,10 @@ export const COUNTRIES_DATA: Country[] = [
   { name: "France", code: "FR" },
   { name: "United Kingdom", code: "GB" },
   { name: "Serbia", code: "RS" },
+  { name: "Senegal", code: "SN" },
   { name: "Ukraine", code: "UA" },
+  { name: "Uganda", code: "UG" },
   { name: "United States", code: "US" },
-]
+];
 
-export const DEFAULT_COUNTRY: Country = { name: "United States", code: "US" }
+export const DEFAULT_COUNTRY: Country = { name: "United States", code: "US" };
